@@ -1,15 +1,15 @@
 #include <stdio.h>
 
 int main(void) {
-    int x; // Ã¹¹øÂ° Á¤¼ö
-    int y; // µÎ¹øÂ° Á¤¼ö
-    int sum; // µÎ Á¤¼öÀÇ ÇÕ
+    int x; // ì²«ë²ˆì§¸ ì •ìˆ˜
+    int y; // ë‘ë²ˆì§¸ ì •ìˆ˜
+    int sum; // ë‘ ì •ìˆ˜ì˜ í•©
 
     x = 100;
     y = 200;
 
     sum = x+y;
 
-    printf("µÎ ¼öÀÇ ÇÕ = %d \n %f", sum,x);
+    printf("ë‘ ìˆ˜ì˜ í•© = %d \n %f", sum,x);
     return 0;
 }

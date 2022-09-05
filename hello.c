@@ -1,15 +1,14 @@
 #include <stdio.h>
 
-int main(void) {
-    int x; // ì²«ë²ˆì§¸ ì •ìˆ˜
-    int y; // ë‘ë²ˆì§¸ ì •ìˆ˜
-    int sum; // ë‘ ì •ìˆ˜ì˜ í•©
+int main() {
+    float x;
+    float y;
 
-    x = 100;
-    y = 200;
+    x = 300000.000000;
+    y = 149600000.000000;
 
-    sum = x+y;
-
-    printf("ë‘ ìˆ˜ì˜ í•© = %d \n %f", sum,x);
+    printf("ºûÀÇ ¼Óµµ´Â : %f km/s \n", x);
+    printf("Áö±¸¿ÍÀÇ °Å¸®´Â : %f km \n", y);
+    printf("µµ´Ş½Ã°£Àº %f ºĞ.", y/x/60);
     return 0;
-}
+    }

@@ -1,166 +1,165 @@
 #include <stdio.h>
 #include <stdbool.h>
-#define cmp(x,y) ((x==y)? 0:((x>y)? 1:-1))
+#include <math.h>
 
-typedef struct {
-    double coef[50];
+typedef struct polynomial{
     int exp[50];
+    double coef[50];
 } polynomial;
 
-polynomial zero = {{0},{0}};
-int binsrc(int a[], int size, int key);
+polynomial zero = {{0}, {0}};
 bool iszero(polynomial p);
-int countTerm(polynomial p);
-polynomial retrieve(polynomial p, int i);
-void setPoly(polynomial* p, int i, int j, double a);
+int len(polynomial p);
+int findex(polynomial p, int i);
 void printPoly(polynomial p);
-polynomial rem(polynomial* p, int i);
-polynomial attach(polynomial* p, int i, double key);
-polynomial padd(polynomial* p, polynomial* q);
-int print_array(int A[], int size);
-
+polynomial retrieve(polynomial p, int i);
+polynomial attach(polynomial p, int i, double a);
+polynomial rem(polynomial p, int i);
+polynomial padd(polynomial p, polynomial q);
+polynomial smult(polynomial p, int i, double a);
+polynomial mult(polynomial p, polynomial q);
 
 int main() {
-    polynomial p = {{2,3,4,5}, {5,4,3,1}};
-    polynomial q=zero;
-    attach(&p, 3, 1);
-    attach(&p, 0, 1);
-    attach(&p, 0, 2);
-    rem(&p, 4);
+    polynomial p = {{4, 2, 0}, {2, -1, 3}};
+    polynomial q = {{5, 3, 2, 0}, {1, 1, 1, 1}};
     printPoly(p);
-}
-
-int binsrc(int a[], int size, int key){
-    int init=0, term=size-1;
-    while(init<=term){
-        int mid = (init+term)/2;
-        switch(cmp(key, a[mid])){
-            case 0:
-                return mid;
-                break;
-            case 1:
-                term = mid-1;
-                break;
-            case -1:
-                init = mid+1;
-                break;
-    }
-    if(init>term){
-        return -1;
-    }
-}
+    printPoly(q);
+    printPoly(mult(p, q));
 }
 
 bool iszero(polynomial p){
-    if(p.coef[0]==0 && p.exp[0]==0){
+    if((p.exp[0]==0) && (p.coef[0]==0.0)){
         return true;
     }
     else return false;
 }
 
-int countTerm(polynomial p){
-    int count = 0;
-    for(int i=0; i<p.exp[0]+1; i++){
-        if(p.coef[i]>0){
+int len(polynomial p){
+    int count =0;
+    for(int i = 0; i<p.exp[0]+1; i++){
+        if(p.exp[i]!=0){
             count++;
         }
     }
-    return count;
+    return count+1;
+
+}
+
+int findex(polynomial p, int i){
+    for(int j=0; j<p.exp[0]+1;j++){
+        if(p.exp[j]==i){
+            return j;
+        }
+    }
+    return -1;
 }
 
 polynomial retrieve(polynomial p, int i){
-    for(int j=0;j<countTerm(p);j++){
-        if(p.exp[j]==i){
-            return (polynomial){{p.coef[j]},{p.exp[j]}}; 
-            break;
-        }
+    int j = findex(p,i);
+    if(j==-1){
+        return zero;
     }
-    return zero;
-}
-
-void setPoly(polynomial* p, int i, int j, double a){
-    p->exp[i] = j;
-    p->coef[i]= a;
+    else return (polynomial){{i}, {p.coef[j]}};
 }
 
 void printPoly(polynomial p){
-    int n=countTerm(p), i;
+    int n = len(p);
     printf("\n");
-    for(i=0;i<n;i++){
-        if(p.exp[i]==0){
+    printf("%.1lf", p.coef[0]);
+    if(p.exp[0]!=0) printf(" x ^ %d", p.exp[0]);
+    for(int i = 1; i< n; i++){
+        printf ("%s", (p.coef[i]>=0)? " +":" -");
+        printf(" %.1lf", fabs(p.coef[i]));
+        if(p.exp[i]!=0) printf(" x ^ %d", p.exp[i]);
+    }
+    printf("\n");
+}
+
+polynomial attach(polynomial p, int i, double a){
+    polynomial r = zero;
+
+    if(a ==0) return p;
+    for(int j=0; j<len(p); j++){
+        if(p.exp[j]>i){
+            r.exp[j]=p.exp[j];
+            r.coef[j]=p.coef[j];
+        }
+        else if(p.exp[j]==i){
+            r.exp[j]=i;
+            r.coef[j]=a;
+            for(int k=j+1; k<len(p); k++){
+                r.exp[k]=p.exp[k];
+                r.coef[k]=p.coef[k];
+            }
             break;
         }
-        else{
-            if(i==0) printf("%6d", p.exp[i]);
-            else printf("%8d", p.exp[i]);
-        }
-    }
-    printf("\n");
-    for(i=0;i<n;i++){
-        if(i==n-1&&p.exp[i]!=0){
-            printf("%2.1lf x", p.coef[i]);
+        else if(p.exp[j]<i){
+            r.exp[j]=i;
+            r.coef[j]=a;
+            for(int k=j; k<len(p); k++){
+                r.exp[k+1]=p.exp[k];
+                r.coef[k+1]=p.coef[k];
             }
-        else if(p.exp[i]==0) printf("%2.1f", p.coef[i]);
-        else printf("%2.1lf x + ", p.coef[i]);
-    }
-    printf("\n");
-}
-
-polynomial attach(polynomial *p, int i, double a){
-    if(a==0) return *p;
-    int n=iszero(*p)?1:countTerm(*p);
-    if(!iszero(retrieve(*p, i))){
-        int j = binsrc(p->exp,countTerm(*p),i);
-     setPoly(p, j, i, a);
-    }
-    else if(i ==0) setPoly(p, n, i, a);
-    else {
-        for(int j=0;j<n;j++){
-            if(p->exp[j]<i){
-                for(int k=n; k>=j;k--){
-                 setPoly(p, k+1, p->exp[k], p->coef[k]);
-                }
-             setPoly(p, j, i, a);
-                break;
-            }
-    }
-    }
-}
-
-
-polynomial rem(polynomial* p, int i){
-    if(!iszero(retrieve(*p,i))){
-        for(int j=binsrc(p->exp,countTerm(*p),i)+1;j<countTerm(*p)+1;j++){
-            setPoly(p,j-1, p->exp[j], p->coef[j]);
-        }
-    }
-    else return *p;
-}
-
-
-polynomial padd(polynomial* p, polynomial* q) {
-    polynomial r;
-    while(!iszero(*p)&& !iszero(*q)){
-        switch(cmp(p->exp[0], q->exp[0])){
-            case 1: 
-                attach(&r, p->exp[0], p->coef[0]);
-                rem(p, 0);
-            case 0:
-                attach(&r, p->exp[0], p->coef[0]+q->coef[0]);
-                rem(p,0); rem(q,0);
-            case -1:
-                attach(&r, q->exp[0], q->coef[0]);
-                rem(q, 0);
+            break;
         }
     }
     return r;
 }
 
-int print_array(int A[], int size){
-    int i;
-    printf("[");
-    for(i=0;i<size;i++){
-        printf("%d ", A[i]);
+polynomial rem(polynomial p, int i){
+    polynomial r = zero;
+    int x = findex(p,i);
+    if(x==-1) return p;
+    else{
+        for(int j=0;j<len(p);j++){
+            if(p.exp[j]>i){
+                r.exp[j]=p.exp[j];
+                r.coef[j]=p.coef[j];
+            }
+            else if(p.exp[j]<=i){
+                r.exp[j]=p.exp[j+1];
+                r.coef[j]=p.coef[j+1];
+            }
+        }
+        return r;
     }
-    printf("]\n");
+}
+
+polynomial padd(polynomial p, polynomial q){
+    polynomial r=zero;
+    while(!iszero(p)||!iszero(q)){
+        if(p.exp[0]>q.exp[0]){
+            r = attach(r, p.exp[0], p.coef[0]);
+            p = rem(p, p.exp[0]);
+        }
+        else if(p.exp[0]==q.exp[0]){
+            r = attach(r, p.exp[0], p.coef[0]+q.coef[0]);
+            p = rem(p, p.exp[0]); q = rem(q, q.exp[0]);
+        }
+        else if(p.exp[0]<q.exp[0]){
+            r = attach(r, q.exp[0], q.coef[0]);
+            q = rem(q, q.exp[0]);
+        }
+    }
+    return r;
+}
+
+
+polynomial smult(polynomial p, int i, double a){
+    polynomial r=zero;
+    while(!iszero(p)){
+        r = attach(r, p.exp[0]+i, a*p.coef[0]);
+        p = rem(p,p.exp[0]);
+    }
+    return r;
+}
+
+
+polynomial mult(polynomial p, polynomial q){
+    polynomial r = zero;
+    while(!iszero(q)){
+        r = padd(r, smult(p, q.exp[0], q.coef[0]));
+        q = rem(q, q.exp[0]);
+    }
+    return r;
 }

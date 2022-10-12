@@ -124,10 +124,10 @@ void add(){
 void show(int num){
     if(!isloaded || isadded) load();
     printf("---------------------\n");
-    printf("\n num : %04d", lib[num].num);
-    printf("\n title : %s", lib[num].title);
-    printf("\n author : %s", lib[num].author);
-    printf("\n ishere : %d\n", lib[num].ishere);
+    printf("num : %04d\n", lib[num].num);
+    printf("title : %s\n", lib[num].title);
+    printf("author : %s\n", lib[num].author);
+    printf("ishere : %d\n", lib[num].ishere);
     printf("---------------------\n");
 }
 

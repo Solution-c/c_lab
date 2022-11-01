@@ -2,25 +2,16 @@
 #include <stdbool.h>
 #define cmp(x,y) ((x==y)? 0:((x>y)? 1:-1))
 
-typedef struct {
-    double coef[50];
-    int exp[50];
-} polynomial;
-
-
-
 
 int binsrc(int a[], int size, int key);
 int modify(int a);
 
 int main() {
-    polynomial p = {{0},{0}};
-    setPolynomial(&p, 0, 2, 2.0);
-    printf("%lf", p.coef[0]);
+    printf(" %d ", cmp(1,2));
+    printf(" %d ", cmp(3,3));
+    printf(" %d ", cmp(2,1));
 
 }
-
-
 
 int binsrc(int a[], int size, int key){
     int init=0, term=size-1;

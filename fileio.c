@@ -97,8 +97,8 @@ void select(){
 void add(){
     FILE* fp;
     int num=0;
-    char title[50]={'\0'};
-    char author[15]={'\0'};
+    char title[300]={'\0'};
+    char author[50]={'\0'};
     
     fp = fopen("list.txt", "a+");
     filecheck(fp);
@@ -108,10 +108,10 @@ void add(){
     getchar();
 
     printf("제목 : ");
-    fgets(title, 50*sizeof(char), stdin);
+    fgets(title, 300*sizeof(char), stdin);
     title[strlen(title)-1]='\0';
     printf("저자명 : ");
-    fgets(author, 15*sizeof(char), stdin);
+    fgets(author, 50*sizeof(char), stdin);
     printf("---------------------\n");
     author[strlen(author)-1]='\0';
 

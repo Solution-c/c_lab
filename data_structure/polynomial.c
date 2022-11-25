@@ -33,7 +33,7 @@ bool iszero(polynomial p){
     }
     else return false;
 }
-
+           
 int len(polynomial p){
     int count =0;
     for(int i = 0; i<p.exp[0]+1; i++){
